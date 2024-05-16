@@ -1,9 +1,9 @@
 package com.course.cars.domain;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
-public interface CarRepository extends CrudRepository<Car, Long> {
-    Iterable<Car> findAllByType(String type);
+public interface CarRepository extends JpaRepository<Car, Long> {
+    List<Car> findAllByType(String type);
 }

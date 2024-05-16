@@ -2,7 +2,9 @@ package com.course.cars.api;
 
 import com.course.cars.domain.Car;
 import com.course.cars.domain.CarsService;
+import com.course.cars.domain.dto.CarDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,18 +17,20 @@ public class CarsController {
     private CarsService service;
 
     @GetMapping
-    public Iterable<Car> getAll() {
-        return service.getCars();
+    public ResponseEntity<List<CarDTO>> getAll() {
+        return ResponseEntity.ok(service.getCars());
     }
 
     @GetMapping("/{id}")
-    public Optional<Car> getById(@PathVariable Long id) {
-        return service.getById(id);
+    public ResponseEntity getById(@PathVariable Long id) {
+        return service.getById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/type/{type}")
-    public Iterable<Car> getByType(@PathVariable String type) {
-        return service.getAllByType(type);
+    public ResponseEntity getByType(@PathVariable String type) {
+        List<CarDTO> cars = service.getAllByType(type);
+
+        return service.getAllByType(type).isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(cars);
     }
 
     @PostMapping

@@ -1,5 +1,6 @@
 package com.course.cars.domain;
 
+import com.course.cars.domain.dto.CarDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -15,16 +16,16 @@ public class CarsService {
     @Autowired
     private CarRepository repository;
 
-    public Iterable<Car> getCars() {
-        return repository.findAll();
+    public List<CarDTO> getCars() {
+        return repository.findAll().stream().map(CarDTO::create).toList();
     }
 
-    public Optional<Car> getById(Long id) {
-        return repository.findById(id);
+    public Optional<CarDTO> getById(Long id) {
+        return repository.findById(id).map(CarDTO::create);
     }
 
-    public Iterable<Car> getAllByType(String type) {
-        return repository.findAllByType(type);
+    public List<CarDTO> getAllByType(String type) {
+        return repository.findAllByType(type).stream().map(CarDTO::create).toList();
     }
 
     public Car create(Car car) {
@@ -34,7 +35,7 @@ public class CarsService {
     public Car update(Long id, Car car) {
         Assert.notNull(id, "Impossible to update data.");
 
-        return getById(id).map(c -> {
+        return repository.findById(id).map(c -> {
             c.setName(car.getName());
             c.setType(car.getType());
 
