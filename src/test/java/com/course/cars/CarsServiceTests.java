@@ -3,13 +3,12 @@ package com.course.cars;
 import com.course.cars.domain.Car;
 import com.course.cars.domain.CarsService;
 import com.course.cars.domain.dto.CarDTO;
+import com.course.cars.domain.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.internal.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,18 +30,23 @@ class CarsServiceTests {
         assertNotNull(createdCarDTO);
 
         Long id = createdCarDTO.getId();
-        Assert.notNull(id);
+        assertNotNull(id);
 
-        Optional<CarDTO> optionalCarDTO = service.getById(id);
-        Assert.isTrue(optionalCarDTO.isPresent());
+        createdCarDTO = service.getById(id);
+        assertNotNull(createdCarDTO);
 
-        createdCarDTO = optionalCarDTO.get();
         assertEquals("Car Spring Test", createdCarDTO.getName());
         assertEquals("Car Spring Test", createdCarDTO.getName());
 
         service.delete(id);
 
-        assertFalse(service.getById(id).isPresent());
+        try {
+            assertNull(service.getById(id));
+            fail("Car not deleted.");
+        } catch (ObjectNotFoundException ex) {
+            // OK
+        }
+
     }
 
     @Test
@@ -54,13 +58,11 @@ class CarsServiceTests {
 
     @Test
     public void testGetById() {
-        Optional<CarDTO> byId = service.getById(11L);
+        CarDTO byId = service.getById(11L);
 
-        assertTrue(byId.isPresent());
+        assertNotNull(byId);
 
-        CarDTO carDTO = byId.get();
-
-        assertEquals("Ferrari FF", carDTO.getName());
+        assertEquals("Ferrari FF", byId.getName());
     }
 
     @Test

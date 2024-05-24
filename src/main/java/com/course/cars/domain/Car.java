@@ -18,18 +18,18 @@ public class Car {
     private String name;
     private String type;
 
-    @Nullable
-    private String description;
-
-    @Nullable
-    private String urlPhoto;
-
-    @Nullable
-    private String urlVideo;
-
-    @Nullable
-    private String latitude;
-
-    @Nullable
-    private String longitude;
+//    @Nullable
+//    private String description;
+//
+//    @Nullable
+//    private String urlPhoto;
+//
+//    @Nullable
+//    private String urlVideo;
+//
+//    @Nullable
+//    private String latitude;
+//
+//    @Nullable
+//    private String longitude;
 }

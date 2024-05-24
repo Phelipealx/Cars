@@ -10,7 +10,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/cars")
@@ -25,7 +24,7 @@ public class CarsController {
 
     @GetMapping("/{id}")
     public ResponseEntity getById(@PathVariable Long id) {
-        return service.getById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @GetMapping("/type/{type}")
@@ -37,14 +36,14 @@ public class CarsController {
 
     @PostMapping
     public ResponseEntity create(@RequestBody Car car) {
-        try {
-            CarDTO newCar = service.create(car);
+//        try {
+        CarDTO newCar = service.create(car);
 
-            URI location = getUri(newCar.getId());
-            return ResponseEntity.created(location).build();
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().build();
-        }
+        URI location = getUri(newCar.getId());
+        return ResponseEntity.created(location).build();
+//        } catch (Exception ex) {
+//            return ResponseEntity.badRequest().build();
+//        }
     }
 
     private URI getUri(Long id) {
@@ -64,6 +63,7 @@ public class CarsController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
-        return service.delete(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        service.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

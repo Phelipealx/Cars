@@ -1,6 +1,7 @@
 package com.course.cars.domain;
 
 import com.course.cars.domain.dto.CarDTO;
+import com.course.cars.domain.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -18,8 +19,8 @@ public class CarsService {
         return repository.findAll().stream().map(CarDTO::create).toList();
     }
 
-    public Optional<CarDTO> getById(Long id) {
-        return repository.findById(id).map(CarDTO::create);
+    public CarDTO getById(Long id) {
+        return repository.findById(id).map(CarDTO::create).orElseThrow(() -> new ObjectNotFoundException("Car not found."));
     }
 
     public List<CarDTO> getAllByType(String type) {
@@ -45,11 +46,7 @@ public class CarsService {
 
     }
 
-    public boolean delete(Long id) {
-        if (getById(id).isPresent()) {
-            repository.deleteById(id);
-            return true;
-        }
-        return false;
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 }
