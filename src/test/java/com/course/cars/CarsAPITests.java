@@ -30,11 +30,11 @@ public class CarsAPITests {
     private CarsService service;
 
     private ResponseEntity<CarDTO> getCar(String url) {
-        return restTemplate.getForEntity(url, CarDTO.class);
+        return restTemplate.withBasicAuth("admin", "admin").getForEntity(url, CarDTO.class);
     }
 
     private ResponseEntity<List<CarDTO>> getCars(String url) {
-        return restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<CarDTO>>() {
+        return restTemplate.withBasicAuth("admin", "admin").exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<CarDTO>>() {
         });
     }
 
@@ -45,7 +45,7 @@ public class CarsAPITests {
         car.setName("Porshe");
         car.setType("sport");
 
-        ResponseEntity response = restTemplate.postForEntity("/api/v1/cars", car, null);
+        ResponseEntity response = restTemplate.withBasicAuth("admin", "admin").postForEntity("/api/v1/cars", car, null);
         System.out.println(response);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -57,7 +57,7 @@ public class CarsAPITests {
         assertEquals("Porshe", carDTO.getName());
         assertEquals("sport", carDTO.getType());
 
-        restTemplate.delete(location);
+        restTemplate.withBasicAuth("admin", "admin").delete(location);
 
         assertEquals(HttpStatus.NOT_FOUND, getCar(location).getStatusCode());
     }

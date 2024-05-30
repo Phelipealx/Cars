@@ -29,3 +29,12 @@ insert into car (name,description,url_photo,url_video,latitude,longitude,type) V
 insert into car (name,description,url_photo,url_video,latitude,longitude,type) VALUES('Rolls Royce Phantom','Rolls Royce Phantom','http://www.livroandroid.com.br/livro/carros/luxo/Rolls_Royce_Phantom.png','http://www.livroandroid.com.br/livro/carros/luxo/rolls_royce.mp4','-23.564224','-46.653156','lux');
 insert into car (name,description,url_photo,url_video,latitude,longitude,type) VALUES('Lexus LFA','Lexus LFA','http://www.livroandroid.com.br/livro/carros/luxo/Lexus_LFA.png','http://www.livroandroid.com.br/livro/carros/luxo/lexus.mp4','-23.564224','-46.653156','lux');
 
+insert into user (name,email,username,password) values ('Phelipe Magalhães','phelipe.alex@gmail.com','phelipealx','$2a$10$1HJftDKl60Hy6y5uJML5OOZO0vLb9ZURYmXKLdxx6tJZS6tm/ZBSO');
+insert into user (name,email,username,password) values ('ADMIN','user@gmail.com','admin','$2a$10$ZzPVE9ftJ8jr56jmySIJK.V9nMB3IIVrVLaTNy4lQJ/G7XALMIBLO');
+
+insert into role (id,name) values (1, 'ROLE_USER');
+insert into role (id,name) values (2, 'ROLE_ADMIN');
+
+insert into user_roles (user_id,role_id) values(1, 1);
+insert into user_roles (user_id,role_id) values(1, 2);
+insert into user_roles (user_id,role_id) values(2, 2);

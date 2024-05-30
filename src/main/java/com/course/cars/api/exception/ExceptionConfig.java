@@ -26,10 +26,10 @@ public class ExceptionConfig extends ResponseEntityExceptionHandler  {
         return ResponseEntity.badRequest().build();
     }
 
-    @Override
-    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return new ResponseEntity<>(new ExceptionError("Operation not allowed."), HttpStatus.METHOD_NOT_ALLOWED);
-    }
+//    @Override
+//    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+//        return new ResponseEntity<>(new ExceptionError("Operation not allowed."), HttpStatus.METHOD_NOT_ALLOWED);
+//    }
 
 
 }

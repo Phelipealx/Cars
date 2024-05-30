@@ -5,6 +5,9 @@ import com.course.cars.domain.CarsService;
 import com.course.cars.domain.dto.CarDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -18,11 +21,13 @@ public class CarsController {
     private CarsService service;
 
     @GetMapping
+    @Secured({ "ROLE_ADMIN", "ROLE_USER" })
     public ResponseEntity<List<CarDTO>> getAll() {
         return ResponseEntity.ok(service.getCars());
     }
 
     @GetMapping("/{id}")
+    @Secured({ "ROLE_ADMIN" })
     public ResponseEntity getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
@@ -35,6 +40,7 @@ public class CarsController {
     }
 
     @PostMapping
+    @Secured({ "ROLE_USER", "ROLE_ADMIN" })
     public ResponseEntity create(@RequestBody Car car) {
 //        try {
         CarDTO newCar = service.create(car);
@@ -65,5 +71,10 @@ public class CarsController {
     public ResponseEntity delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/userInfo")
+    public UserDetails userInfo(@AuthenticationPrincipal UserDetails user) {
+        return user;
     }
 }
