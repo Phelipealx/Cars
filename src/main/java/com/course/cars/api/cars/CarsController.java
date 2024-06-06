@@ -1,4 +1,4 @@
-package com.course.cars.api;
+package com.course.cars.api.cars;
 
 import com.course.cars.domain.Car;
 import com.course.cars.domain.CarsService;
