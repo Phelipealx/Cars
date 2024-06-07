@@ -1,0 +1,11 @@
+create table user (
+   id bigint not null auto_increment,
+    email varchar(255),
+    username varchar(255),
+    name varchar(255),
+    password varchar(255),
+    primary key (id)
+);
+
+insert into user(name,email,username,password) values ('Phelipe Magalhães','phelipe.alex@gmail.com','phelipealx','$2a$10$1HJftDKl60Hy6y5uJML5OOZO0vLb9ZURYmXKLdxx6tJZS6tm/ZBSO');
+insert into user(name,email,username,password) values ('ADMIN','admin@gmail.com','admin','$2a$10$ZzPVE9ftJ8jr56jmySIJK.V9nMB3IIVrVLaTNy4lQJ/G7XALMIBLO');
