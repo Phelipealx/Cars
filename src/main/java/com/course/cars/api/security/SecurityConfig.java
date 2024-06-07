@@ -1,28 +1,22 @@
 package com.course.cars.api.security;
 
-import com.course.cars.domain.UserRepository;
+import com.course.cars.api.security.jwt.JwtAuthenticationFilter;
+import com.course.cars.api.security.jwt.JwtAuthorizationFilter;
+import com.course.cars.api.security.jwt.handler.AccessDeniedHandler;
+import com.course.cars.api.security.jwt.handler.UnauthorizedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
-import javax.sql.DataSource;
-
-import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.H2;
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -33,16 +27,52 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    @Qualifier("userDetailsService")
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private UnauthorizedHandler unauthorizedHandler;
+
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        AuthenticationManager authManager = authenticationManager();
+
         http
                 .authorizeHttpRequests((authz) -> authz
+                        .requestMatchers(HttpMethod.GET, "/api/v1/login")
+                        .permitAll()
+                        .requestMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
-                .httpBasic(withDefaults())
+//                .httpBasic(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
+                .addFilter(new JwtAuthenticationFilter(authManager))
+                .addFilter(new JwtAuthorizationFilter(authManager, userDetailsService))
+
+                .accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(unauthorizedHandler)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
+
+//        http
+//                .authorizeRequests()
+//                .antMatchers(HttpMethod.GET, "/api/v1/login").permitAll()
+//                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
+//                .permitAll()
+//                .anyRequest().authenticated()
+//                .and().csrf().disable()
+//                .addFilter(new JwtAuthenticationFilter(authManager))
+//                .addFilter(new JwtAuthorizationFilter(authManager, userDetailsService))
+//                .exceptionHandling()
+//                .accessDeniedHandler(accessDeniedHandler)
+//                .authenticationEntryPoint(unauthorizedHandler)
+//                .and()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
 //    @Bean
